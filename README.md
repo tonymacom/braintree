@@ -9,4 +9,4 @@
 
 ### 支付原理图: 
 
-(https://note.youdao.com/yws/api/group/50333752/file/426966731?method=download&inline=true&version=1&shareToken=3C6E6C191E8641739AC90E524E1AF22E)
+[image](https://note.youdao.com/yws/api/group/50333752/file/426966731?method=download&inline=true&version=1&shareToken=3C6E6C191E8641739AC90E524E1AF22E)
