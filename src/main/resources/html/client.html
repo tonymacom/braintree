@@ -1,0 +1,60 @@
+<head>
+    <meta charset="utf-8">
+    <script src="https://js.braintreegateway.com/web/dropin/1.13.0/js/dropin.min.js"></script>
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div id="dropin-wrapper">
+    <div id="checkout-message"></div>
+    <div id="dropin-container"></div>
+    <button id="submit-button">Submit payment</button>
+</div>
+<script>
+    var button = document.querySelector('#submit-button');
+
+    var tokens = [];
+
+    $.ajax({
+        type: 'get',
+        url: 'http://localhost:8080/getTokens'
+    }).done(function(result) {
+        tokens[0] = result.rightToken;
+        braintreeCreate();
+    });
+
+   function braintreeCreate(){
+       braintree.dropin.create({
+           authorization: tokens[0],
+           container: '#dropin-container'
+       }, function (createErr, instance) {
+           button.addEventListener('click', function () {
+               instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
+                   console.log(payload.nonce);
+                   $.ajax({
+                       type: 'POST',
+                       url: 'http://localhost:8080/checkout',
+                       data: {'paymentMethodNonce': payload.nonce}
+                   }).done(function(result) {
+                       instance.teardown(function (teardownErr) {
+                           if (teardownErr) {
+                               console.error('Could not tear down Drop-in UI!');
+                           } else {
+                               console.info('Drop-in UI has been torn down!');
+                               $('#submit-button').remove();
+                           }
+                       });
+                       if (result.success) {
+                           $('#checkout-message').html('<h1>Success</h1><p>Your Drop-in UI is working! Check your <a href="https://sandbox.braintreegateway.com/login">sandbox Control Panel</a> for your test transactions.</p><p>Refresh to try another transaction.</p><P>'+JSON.stringify(result)+'</P>');
+                       } else {
+                           console.log(result);
+                           $('#checkout-message').html('<h1>Error</h1><p>Check your console.</p>');
+                       }
+                   });
+               });
+           });
+       });
+   }
+
+</script>
+</body>
