@@ -31,6 +31,14 @@ public class CheckoutController {
             "b804d032990e2b99e6f8093d61aed766" //private key
     );
 
+    /*public static void main(String[] args) {
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
+                .customerId("283304601");
+
+        String clientToken = gateway.clientToken().generate(clientTokenRequest);
+        System.out.println(clientToken);
+    }*/
+
 
     @GetMapping("/getTokens")
     public Object getTokens(HttpServletResponse response){
