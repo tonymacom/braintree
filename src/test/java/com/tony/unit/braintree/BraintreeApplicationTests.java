@@ -89,17 +89,6 @@ public class BraintreeApplicationTests {
 
 
     //error
-    @Test
-    public void getPaymentMethodNonce(){
-        String token = gateway.clientToken().generate(clientTokenRequest);
-        System.out.println(token);
-        Result<PaymentMethodNonce> result = gateway.paymentMethodNonce().create(token);
-        String nonce = result.getTarget().getNonce();
-        System.out.println(nonce);
-
-    }
-
-    //error
     //
     @Test
     public void findPaymentMethodNonce(){
