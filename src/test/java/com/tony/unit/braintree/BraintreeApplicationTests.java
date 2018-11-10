@@ -21,6 +21,15 @@ public class BraintreeApplicationTests {
     public static ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
             .customerId("551309871");
 
+    @Test
+    public void createClientToken() {
+        ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
+                .customerId("283304601");
+
+        String clientToken = gateway.clientToken().generate(clientTokenRequest);
+        System.out.println(clientToken);
+    }
+
 
     /**
      * 创建custom
@@ -29,13 +38,14 @@ public class BraintreeApplicationTests {
     public void createCustom(){
 
         CustomerRequest request = new CustomerRequest()
-                .firstName("Mark")
-                .lastName("Jones")
-                .company("Jones Co.")
-                .email("mark.jones@example.com")
-                .fax("419-555-1234")
-                .phone("614-555-1234")
-                .website("http://example.com");
+                .id("1231232");
+//                .firstName("Mark2")
+//                .lastName("Jones")
+//                .company("Jones Co.")
+//                .email("mark.jones@example.com")
+//                .fax("419-555-1234")
+//                .phone("614-555-1234")
+//                .website("http://example.com");
         Result<Customer> result = gateway.customer().create(request);
 
         if(result.isSuccess()){
@@ -79,9 +89,11 @@ public class BraintreeApplicationTests {
     }
 
     //error
+    //
     @Test
     public void findPaymentMethodNonce(){
         PaymentMethodNonce paymentMethodNonce = gateway.paymentMethodNonce().find("5e7c7b58-2e44-0727-7802-85e7ebf3728c");
+        //3D信用卡认证
         ThreeDSecureInfo info = paymentMethodNonce.getThreeDSecureInfo();
         if (info == null) {
             return; // This means that the nonce was not 3D Secured

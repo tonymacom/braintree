@@ -9,52 +9,23 @@
     <div id="checkout-message"></div>
     <div id="dropin-container"></div>
     <button id="submit-button">Submit payment</button>
+    <div id="dropin-nonce"></div>
 </div>
 <script>
-    var button = document.querySelector('#submit-button');
+   var button = document.querySelector('#submit-button');
 
-    var tokens = [];
-
-    $.ajax({
-        type: 'get',
-        url: 'http://localhost:8080/getTokens'
-    }).done(function(result) {
-        tokens[0] = result.rightToken;
-        braintreeCreate();
-    });
-
-   function braintreeCreate(){
-       braintree.dropin.create({
-           authorization: tokens[0],
-           container: '#dropin-container'
-       }, function (createErr, instance) {
-           button.addEventListener('click', function () {
-               instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
-                   console.log(payload.nonce);
-                   $.ajax({
-                       type: 'POST',
-                       url: 'http://localhost:8080/checkout',
-                       data: {'paymentMethodNonce': payload.nonce}
-                   }).done(function(result) {
-                       instance.teardown(function (teardownErr) {
-                           if (teardownErr) {
-                               console.error('Could not tear down Drop-in UI!');
-                           } else {
-                               console.info('Drop-in UI has been torn down!');
-                               $('#submit-button').remove();
-                           }
-                       });
-                       if (result.success) {
-                           $('#checkout-message').html('<h1>Success</h1><p>Your Drop-in UI is working! Check your <a href="https://sandbox.braintreegateway.com/login">sandbox Control Panel</a> for your test transactions.</p><p>Refresh to try another transaction.</p><P>'+JSON.stringify(result)+'</P>');
-                       } else {
-                           console.log(result);
-                           $('#checkout-message').html('<h1>Error</h1><p>Check your console.</p>');
-                       }
-                   });
-               });
+   braintree.dropin.create({
+       //eyJ2ZXJzaW9uIjoyLCJhdXRob3JpemF0aW9uRmluZ2VycHJpbnQiOiI4OGIzNjVjOGU4MmUyMDI0MmMzZWMwNWVlODdjN2M0OGQ5MzFhN2VkMjc0NzQwNGQ5Yzg5OWVlYTM2ZWRhNjdkfGNyZWF0ZWRfYXQ9MjAxOC0xMS0wOVQwMzowMjo1OS4yNzk0NDIzNTIrMDAwMFx1MDAyNmN1c3RvbWVyX2lkPTI4MzMwNDYwMVx1MDAyNm1lcmNoYW50X2lkPXZqaGR4Y216ZjJianE3eTlcdTAwMjZwdWJsaWNfa2V5PXkyc3c0YjhxcG54cHhtN3YiLCJjb25maWdVcmwiOiJodHRwczovL2FwaS5zYW5kYm94LmJyYWludHJlZWdhdGV3YXkuY29tOjQ0My9tZXJjaGFudHMvdmpoZHhjbXpmMmJqcTd5OS9jbGllbnRfYXBpL3YxL2NvbmZpZ3VyYXRpb24iLCJncmFwaFFMIjp7InVybCI6Imh0dHBzOi8vcGF5bWVudHMuc2FuZGJveC5icmFpbnRyZWUtYXBpLmNvbS9ncmFwaHFsIiwiZGF0ZSI6IjIwMTgtMDUtMDgifSwiY2hhbGxlbmdlcyI6W10sImVudmlyb25tZW50Ijoic2FuZGJveCIsImNsaWVudEFwaVVybCI6Imh0dHBzOi8vYXBpLnNhbmRib3guYnJhaW50cmVlZ2F0ZXdheS5jb206NDQzL21lcmNoYW50cy92amhkeGNtemYyYmpxN3k5L2NsaWVudF9hcGkiLCJhc3NldHNVcmwiOiJodHRwczovL2Fzc2V0cy5icmFpbnRyZWVnYXRld2F5LmNvbSIsImF1dGhVcmwiOiJodHRwczovL2F1dGgudmVubW8uc2FuZGJveC5icmFpbnRyZWVnYXRld2F5LmNvbSIsImFuYWx5dGljcyI6eyJ1cmwiOiJodHRwczovL29yaWdpbi1hbmFseXRpY3Mtc2FuZC5zYW5kYm94LmJyYWludHJlZS1hcGkuY29tL3ZqaGR4Y216ZjJianE3eTkifSwidGhyZWVEU2VjdXJlRW5hYmxlZCI6dHJ1ZSwicGF5cGFsRW5hYmxlZCI6dHJ1ZSwicGF5cGFsIjp7ImRpc3BsYXlOYW1lIjoidG9ueV91bml0IiwiY2xpZW50SWQiOm51bGwsInByaXZhY3lVcmwiOiJodHRwOi8vZXhhbXBsZS5jb20vcHAiLCJ1c2VyQWdyZWVtZW50VXJsIjoiaHR0cDovL2V4YW1wbGUuY29tL3RvcyIsImJhc2VVcmwiOiJodHRwczovL2Fzc2V0cy5icmFpbnRyZWVnYXRld2F5LmNvbSIsImFzc2V0c1VybCI6Imh0dHBzOi8vY2hlY2tvdXQucGF5cGFsLmNvbSIsImRpcmVjdEJhc2VVcmwiOm51bGwsImFsbG93SHR0cCI6dHJ1ZSwiZW52aXJvbm1lbnROb05ldHdvcmsiOnRydWUsImVudmlyb25tZW50Ijoib2ZmbGluZSIsInVudmV0dGVkTWVyY2hhbnQiOmZhbHNlLCJicmFpbnRyZWVDbGllbnRJZCI6Im1hc3RlcmNsaWVudDMiLCJiaWxsaW5nQWdyZWVtZW50c0VuYWJsZWQiOnRydWUsIm1lcmNoYW50QWNjb3VudElkIjoidG9ueV91bml0IiwiY3VycmVuY3lJc29Db2RlIjoiVVNEIn0sIm1lcmNoYW50SWQiOiJ2amhkeGNtemYyYmpxN3k5IiwidmVubW8iOiJvZmYifQ==
+       authorization: "eyJ2ZXJzaW9uIjoyLCJhdXRob3JpemF0aW9uRmluZ2VycHJpbnQiOiJhYWM4NDUwYWE1MWExNmJlYWMwNzVmMTkzYmIzM2I2NjAxOWQzMzZhZjJlOGI5Y2U0NTY1YmNhMTA3MDUxODdifGNyZWF0ZWRfYXQ9MjAxOC0xMS0wOVQwNjoyMDoyNi43OTE5NDE2OTIrMDAwMFx1MDAyNmN1c3RvbWVyX2lkPTY3ODc1NVx1MDAyNm1lcmNoYW50X2lkPXZqaGR4Y216ZjJianE3eTlcdTAwMjZwdWJsaWNfa2V5PXkyc3c0YjhxcG54cHhtN3YiLCJjb25maWdVcmwiOiJodHRwczovL2FwaS5zYW5kYm94LmJyYWludHJlZWdhdGV3YXkuY29tOjQ0My9tZXJjaGFudHMvdmpoZHhjbXpmMmJqcTd5OS9jbGllbnRfYXBpL3YxL2NvbmZpZ3VyYXRpb24iLCJncmFwaFFMIjp7InVybCI6Imh0dHBzOi8vcGF5bWVudHMuc2FuZGJveC5icmFpbnRyZWUtYXBpLmNvbS9ncmFwaHFsIiwiZGF0ZSI6IjIwMTgtMDUtMDgifSwiY2hhbGxlbmdlcyI6W10sImVudmlyb25tZW50Ijoic2FuZGJveCIsImNsaWVudEFwaVVybCI6Imh0dHBzOi8vYXBpLnNhbmRib3guYnJhaW50cmVlZ2F0ZXdheS5jb206NDQzL21lcmNoYW50cy92amhkeGNtemYyYmpxN3k5L2NsaWVudF9hcGkiLCJhc3NldHNVcmwiOiJodHRwczovL2Fzc2V0cy5icmFpbnRyZWVnYXRld2F5LmNvbSIsImF1dGhVcmwiOiJodHRwczovL2F1dGgudmVubW8uc2FuZGJveC5icmFpbnRyZWVnYXRld2F5LmNvbSIsImFuYWx5dGljcyI6eyJ1cmwiOiJodHRwczovL29yaWdpbi1hbmFseXRpY3Mtc2FuZC5zYW5kYm94LmJyYWludHJlZS1hcGkuY29tL3ZqaGR4Y216ZjJianE3eTkifSwidGhyZWVEU2VjdXJlRW5hYmxlZCI6dHJ1ZSwicGF5cGFsRW5hYmxlZCI6dHJ1ZSwicGF5cGFsIjp7ImRpc3BsYXlOYW1lIjoidG9ueV91bml0IiwiY2xpZW50SWQiOm51bGwsInByaXZhY3lVcmwiOiJodHRwOi8vZXhhbXBsZS5jb20vcHAiLCJ1c2VyQWdyZWVtZW50VXJsIjoiaHR0cDovL2V4YW1wbGUuY29tL3RvcyIsImJhc2VVcmwiOiJodHRwczovL2Fzc2V0cy5icmFpbnRyZWVnYXRld2F5LmNvbSIsImFzc2V0c1VybCI6Imh0dHBzOi8vY2hlY2tvdXQucGF5cGFsLmNvbSIsImRpcmVjdEJhc2VVcmwiOm51bGwsImFsbG93SHR0cCI6dHJ1ZSwiZW52aXJvbm1lbnROb05ldHdvcmsiOnRydWUsImVudmlyb25tZW50Ijoib2ZmbGluZSIsInVudmV0dGVkTWVyY2hhbnQiOmZhbHNlLCJicmFpbnRyZWVDbGllbnRJZCI6Im1hc3RlcmNsaWVudDMiLCJiaWxsaW5nQWdyZWVtZW50c0VuYWJsZWQiOnRydWUsIm1lcmNoYW50QWNjb3VudElkIjoidG9ueV91bml0IiwiY3VycmVuY3lJc29Db2RlIjoiVVNEIn0sIm1lcmNoYW50SWQiOiJ2amhkeGNtemYyYmpxN3k5IiwidmVubW8iOiJvZmYifQ==",
+       container: '#dropin-container'
+   }, function (createErr, instance) {
+       button.addEventListener('click', function () {
+           instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
+               console.log(payload.nonce);
+               $('#dropin-nonce').html('<h2>nonce : '+payload.nonce+'</h2>');
            });
        });
-   }
+   });
 
 </script>
 </body>

@@ -31,15 +31,6 @@ public class CheckoutController {
             "b804d032990e2b99e6f8093d61aed766" //private key
     );
 
-    /*public static void main(String[] args) {
-        ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
-                .customerId("283304601");
-
-        String clientToken = gateway.clientToken().generate(clientTokenRequest);
-        System.out.println(clientToken);
-    }*/
-
-
     @GetMapping("/getTokens")
     public Object getTokens(HttpServletResponse response){
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -47,7 +38,7 @@ public class CheckoutController {
         ClientTokenRequest clientTokenRequest = new ClientTokenRequest()
                 .customerId("283304601");
 
-        String clientToken = gateway.clientToken().generate(clientTokenRequest);
+        String clientToken = gateway.clientToken().generate();
 
         Map<String,String> tokens = new HashMap<>();
         tokens.put("rightToken",clientToken);
@@ -67,6 +58,7 @@ public class CheckoutController {
 
         TransactionRequest request = new TransactionRequest()
                 .amount(new BigDecimal("10.00"))
+                .orderId("20180110801")
                 .paymentMethodNonce(paymentMethodNonce)
                 .options()
                 .submitForSettlement(true)
