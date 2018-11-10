@@ -38,14 +38,14 @@ public class BraintreeApplicationTests {
     public void createCustom(){
 
         CustomerRequest request = new CustomerRequest()
-                .id("1231232");
-//                .firstName("Mark2")
-//                .lastName("Jones")
-//                .company("Jones Co.")
-//                .email("mark.jones@example.com")
-//                .fax("419-555-1234")
-//                .phone("614-555-1234")
-//                .website("http://example.com");
+                .id("1231232")
+                .firstName("Mark2")
+                .lastName("Jones")
+                .company("Jones Co.")
+                .email("mark.jones@example.com")
+                .fax("419-555-1234")
+                .phone("614-555-1234")
+                .website("http://example.com");
         Result<Customer> result = gateway.customer().create(request);
 
         if(result.isSuccess()){
