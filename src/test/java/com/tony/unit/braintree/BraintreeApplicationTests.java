@@ -67,6 +67,27 @@ public class BraintreeApplicationTests {
         System.out.println(JSON.toJSONString(result));
     }
 
+    @Test
+    public void testAddress(){
+        AddressRequest request = new AddressRequest()
+                .firstName("Jenna")
+                .lastName("Smith")
+                .company("Braintree")
+                .streetAddress("1 E Main St")
+                .extendedAddress("Suite 403")
+                .locality("Chicago")
+                .region("Illinois")
+                .postalCode("60622")
+                .countryCodeAlpha2("US");
+
+        Result<Address> result = gateway.address().create("678755", request);
+
+        System.out.println(JSON.toJSONString(result));
+
+    }
+
+
+
     /**
      * 折扣卡
      */
