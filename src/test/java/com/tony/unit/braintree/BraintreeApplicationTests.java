@@ -76,6 +76,17 @@ public class BraintreeApplicationTests {
         System.out.println(JSON.toJSONString(discounts));
     }
 
+    /**
+     * 获取支付nonce
+     *
+     */
+    @Test
+    public void getNonce() {
+
+        Result<PaymentMethodNonce> result = gateway.paymentMethodNonce().create("kcx9dhd");
+        System.out.println(result.getTarget().getNonce());
+    }
+
 
     //error
     @Test
