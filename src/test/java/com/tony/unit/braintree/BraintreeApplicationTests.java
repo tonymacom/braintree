@@ -31,6 +31,10 @@ public class BraintreeApplicationTests {
     }
 
 
+
+
+
+
     /**
      * 创建custom
      */
@@ -58,11 +62,13 @@ public class BraintreeApplicationTests {
      */
     @Test
     public void createCreditCard(){
+
         CreditCardRequest request = new CreditCardRequest()
                 .customerId("283304601")
                 .cvv("100")
                 .number("4111111111111111")
-                .expirationDate("06/22");
+                .expirationDate("06/22")
+                ;
         Result<CreditCard> result = gateway.creditCard().create(request);
         System.out.println(JSON.toJSONString(result));
     }
@@ -83,6 +89,15 @@ public class BraintreeApplicationTests {
         Result<Address> result = gateway.address().create("678755", request);
 
         System.out.println(JSON.toJSONString(result));
+
+    }
+
+
+    @Test
+    public void findCard(){
+        CreditCard creditCard = gateway.creditCard().find("3cjxfn");
+        Address address = creditCard.getBillingAddress();
+        System.out.println(JSON.toJSONString(address));
 
     }
 
