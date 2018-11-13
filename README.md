@@ -5,6 +5,8 @@
 
 ### resources/html/client.html为测试页面
 
+### resources/html/client_server.html为启动服务之后的测试页面
+
 ### com.tony.unit.braintree.BraintreeApplicationTests 中测试了部分API.
 
 ### 支付原理图: 
