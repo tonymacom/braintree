@@ -79,6 +79,25 @@ public class BraintreeApplicationTests {
     }
 
     @Test
+    public void updateCreditCard(){
+
+        CreditCardRequest request = new CreditCardRequest()
+                .cardholderName("tony2")
+                .customerId("283304601")
+                .cvv("")
+                .number("4111111111111111")
+//                .token("abcd")
+                .expirationDate("06/22")
+//                .billingAddress()
+//                .firstName("tony22")
+//                .done()
+                ;
+        Result<CreditCard> updateResult = gateway.creditCard().update("abcd", request);
+        System.out.println(JSON.toJSONString(updateResult));
+    }
+
+
+    @Test
     public void testAddress(){
         AddressRequest request = new AddressRequest()
                 .firstName("Jenna")
