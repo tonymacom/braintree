@@ -49,7 +49,8 @@ public class BraintreeApplicationTests {
                 .email("mark.jones@example.com")
                 .fax("419-555-1234")
                 .phone("614-555-1234")
-                .website("http://example.com");
+                .website("http://example.com")
+                ;
         Result<Customer> result = gateway.customer().create(request);
 
         if(result.isSuccess()){
@@ -67,7 +68,11 @@ public class BraintreeApplicationTests {
                 .customerId("283304601")
                 .cvv("100")
                 .number("4111111111111111")
+                .token("abcd")
                 .expirationDate("06/22")
+                .billingAddress()
+                .firstName("tony2")
+                .done()
                 ;
         Result<CreditCard> result = gateway.creditCard().create(request);
         System.out.println(JSON.toJSONString(result));
