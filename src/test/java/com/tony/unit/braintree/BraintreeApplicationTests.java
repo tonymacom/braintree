@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.braintreegateway.*;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -42,11 +43,11 @@ public class BraintreeApplicationTests {
     public void createCustom(){
 
         CustomerRequest request = new CustomerRequest()
-                .id("1231232")
-                .firstName("Mark2")
-                .lastName("Jones")
-                .company("Jones Co.")
-                .email("mark.jones@example.com")
+                .id("585759")
+                .firstName("tony")
+                .lastName("ma")
+                .company("yami Co.")
+                .email("ittony@example.com")
                 .fax("419-555-1234")
                 .phone("614-555-1234")
                 .website("http://example.com")
@@ -123,6 +124,27 @@ public class BraintreeApplicationTests {
         Address address = creditCard.getBillingAddress();
         System.out.println(JSON.toJSONString(address));
 
+    }
+
+
+    /**
+     * 支付
+     */
+    @Test
+    public void charge(){
+        TransactionRequest  saleRequest = new TransactionRequest()
+                .customerId("283304601")
+                .amount(new BigDecimal(10.00))
+                .orderId("aaaaaorderId")
+                .paymentMethodToken("3p3x27")
+                .creditCard()
+                .cvv("2000")
+                .done()
+                .options()
+                .submitForSettlement(true)
+                .done();
+        Result<Transaction> result = gateway.transaction().sale(saleRequest);
+        System.out.println(JSON.toJSONString(result));
     }
 
 
